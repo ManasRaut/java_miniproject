@@ -25,7 +25,7 @@ public class ListItem extends JPanel {
         this.add(userLabel);
         //this.add(pswordLabel);
 
-        Border noneBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
+        Border noneBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.WHITE);
         this.setBorder(noneBorder);
         Color hoverColor = new Color(202, 219, 236);
         Color noneColor = new Color(238, 238, 238);

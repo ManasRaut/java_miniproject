@@ -1,7 +1,10 @@
+javac -d . UserDBUtilities.java
+javac -d . Encryption.java
+javac -d . ActionCnfm.java
 javac -d . SignUp.java
 javac -d . CompleteView.java
 javac -d . ListItem.java
 javac -d . NewPassword.java
 javac -d . Home.java
 javac -d .  LogIn.java
-java java_miniproject.LogIn
+java -cp ".;lib/sqlite-jdbc-3.32.3.2.jar" java_miniproject.LogIn

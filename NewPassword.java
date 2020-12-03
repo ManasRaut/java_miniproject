@@ -22,6 +22,7 @@ public class NewPassword {
 
     private void initUi() {
         JLabel label1 = new JLabel("Add New PassWord");
+        label1.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 22));
 
         JPanel panel1 = new JPanel(new FlowLayout());
         JLabel label2 = new JLabel("Website : ");
@@ -41,6 +42,12 @@ public class NewPassword {
         panel3.add(label4);
         panel3.add(passwordField);
 
+        JPanel panel5 = new JPanel(new FlowLayout());
+        JLabel label5 = new JLabel("Suggest new password: ");
+        JButton suggestBtn = new JButton("Suggest");
+        panel5.add(label5);
+        panel5.add(suggestBtn);
+
         JPanel panel4 = new JPanel(new FlowLayout());
         JButton addButton = new JButton("Add");
         JButton cancelButton = new JButton("Cancel");
@@ -51,6 +58,7 @@ public class NewPassword {
         frame.add(panel1);
         frame.add(panel2);
         frame.add(panel3);
+        frame.add(panel5);
         frame.add(panel4);
 
         cancelButton.addActionListener(new ActionListener() {
@@ -60,6 +68,11 @@ public class NewPassword {
             }
         });
         addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                //TODO
+            }
+        });
+        suggestBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 //TODO
             }
