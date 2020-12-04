@@ -17,7 +17,7 @@ class UserInfo{
 }
 public class UserDBUtilities {
     Connection connection;
-    String url="jdbc:sqlite:C:\\Users\\Vignesh\\Desktop\\JavaDev\\db\\Users.db";
+    String url="jdbc:sqlite:database\\Users.db";
     //AS SOON AS OBJECT OF THIS CLASS IS CREATED AN CONNECTION IS ESTABLISHED WITH THE USER DB.
     UserDBUtilities() throws SQLException {
         connection = DriverManager.getConnection(url);
@@ -61,8 +61,5 @@ public class UserDBUtilities {
         query.setString(3,infoToDelete.username);
         query.setString(4,infoToDelete.password);
         query.executeUpdate();
-    }
-    public static void main(String[] args) {
-
     }
 }

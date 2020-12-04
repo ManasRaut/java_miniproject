@@ -10,9 +10,11 @@ public class NewPassword {
     JTextField usrnameField;
     JTextField passwordField;
     private String user;
+    NewPassword thisClass;
 
     NewPassword(String u) {
         user = u;
+        thisClass = this;
         frame = new JFrame("Create New Password");
         frame.setSize(500, 300);
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -21,55 +23,79 @@ public class NewPassword {
     }
 
     private void initUi() {
-        JLabel label1 = new JLabel("Add New PassWord");
-        label1.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 22));
-
         JPanel panel1 = new JPanel(new FlowLayout());
-        JLabel label2 = new JLabel("Website : ");
-        webnameField = new JTextField(30);
-        panel1.add(label2);
-        panel1.add(webnameField);
+        JLabel label1 = new JLabel("New password");
+        panel1.setBackground(Styles.primary_white);
+        label1.setFont(Styles.big_label_font);
+        label1.setForeground(Styles.primary_violet);
 
         JPanel panel2 = new JPanel(new FlowLayout());
-        JLabel label3 = new JLabel("Username : ");
-        usrnameField = new JTextField(30);
-        panel2.add(label3);
-        panel2.add(usrnameField);
+        JLabel label2 = new JLabel("Website: ");
+        panel2.setBackground(Styles.primary_white);
+        webnameField = new JTextField(20);
+        webnameField.setBorder(Styles.text_field_border);
+        webnameField.setFont(Styles.text_field_font);
 
         JPanel panel3 = new JPanel(new FlowLayout());
+        JLabel label3 = new JLabel("Username : ");
+        panel3.setBackground(Styles.primary_white);
+        usrnameField = new JTextField(20);
+        usrnameField.setBorder(Styles.text_field_border);
+        usrnameField.setFont(Styles.text_field_font);
+
+        JPanel panel4 = new JPanel(new FlowLayout());
         JLabel label4 = new JLabel("Password : ");
-        passwordField = new JTextField(30);
-        panel3.add(label4);
-        panel3.add(passwordField);
+        panel4.setBackground(Styles.primary_white);
+        passwordField = new JTextField(20);
+        passwordField.setBorder(Styles.text_field_border);
+        passwordField.setFont(Styles.text_field_font);
 
         JPanel panel5 = new JPanel(new FlowLayout());
         JLabel label5 = new JLabel("Suggest new password: ");
         JButton suggestBtn = new JButton("Suggest");
+        panel5.setBackground(Styles.primary_white);
+        suggestBtn.setBackground(Styles.primary_button_color);
+        suggestBtn.setForeground(Color.WHITE);
+        suggestBtn.setBorder(Styles.white_button_border);
+
+        JPanel panel6 = new JPanel(new FlowLayout());
+        JButton addBtn = new JButton("Add");
+        JButton cancelBtn = new JButton("Cancel");
+        panel6.setBackground(Styles.primary_white);
+        addBtn.setBackground(Styles.primary_button_color);
+        addBtn.setForeground(Color.WHITE);
+        addBtn.setBorder(Styles.white_button_border);
+        cancelBtn.setBackground(Styles.primary_button_color);
+        cancelBtn.setForeground(Color.WHITE);
+        cancelBtn.setBorder(Styles.white_button_border);
+
+        panel1.add(label1);
+        panel2.add(label2);
+        panel2.add(webnameField);       
+        panel3.add(label3);
+        panel3.add(usrnameField);      
+        panel4.add(label4);
+        panel4.add(passwordField);      
         panel5.add(label5);
-        panel5.add(suggestBtn);
-
-        JPanel panel4 = new JPanel(new FlowLayout());
-        JButton addButton = new JButton("Add");
-        JButton cancelButton = new JButton("Cancel");
-        panel4.add(addButton);
-        panel4.add(cancelButton);
-
-        frame.add(label1);
+        panel5.add(suggestBtn);        
+        panel6.add(addBtn);
+        panel6.add(cancelBtn);
         frame.add(panel1);
         frame.add(panel2);
         frame.add(panel3);
-        frame.add(panel5);
         frame.add(panel4);
+        frame.add(panel5);
+        frame.add(panel6);
 
-        cancelButton.addActionListener(new ActionListener() {
+        cancelBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 //TODO
                 frame.setVisible(false);
             }
         });
-        addButton.addActionListener(new ActionListener() {
+        addBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
+                new ActionCnfm(user, thisClass);
             }
         });
         suggestBtn.addActionListener(new ActionListener() {
@@ -77,5 +103,16 @@ public class NewPassword {
                 //TODO
             }
         });
+    }
+
+    public void action() {
+        try {
+            UserDBUtilities db = new UserDBUtilities();
+            EncryptedData enData = Encryption.encrypt(passwordField.getText());
+            db.insert(user, webnameField.getText(), usrnameField.getText(),  enData.encryptedPassword);
+            frame.setVisible(false);
+        } catch(Exception e) {
+            new ErrorDialog("Error", "Unable to add new details");
+        }
     }
 }

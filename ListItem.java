@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public class ListItem extends JPanel {
     private JLabel userLabel;
-    //private JLabel pswordLabel;
     private JLabel srno;
     private JPanel thisPanel;
     private JLabel webname;
@@ -17,17 +16,18 @@ public class ListItem extends JPanel {
         thisPanel = this;
         userLabel = new JLabel(u);
         webname = new JLabel(w);
-        //pswordLabel = new JLabel(p);
         srno = new JLabel(String.valueOf(sr));
+        Dimension size = new Dimension(600, 30);
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.setMaximumSize(size);
+        this.setMinimumSize(size);
         this.add(srno);
         this.add(webname);
         this.add(userLabel);
-        //this.add(pswordLabel);
 
-        Border noneBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.WHITE);
+        Border noneBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(190, 148, 214));
         this.setBorder(noneBorder);
-        Color hoverColor = new Color(202, 219, 236);
+        Color hoverColor = new Color(213, 185, 227);
         Color noneColor = new Color(238, 238, 238);
         Color clickColor = new Color(176, 202, 225);
 

@@ -12,7 +12,7 @@ class EncryptedData{
     String encryptedPassword,privateKey;
 }
 public class Encryption {
-    public EncryptedData encrypt(String password)throws Exception{
+    public static EncryptedData encrypt(String password)throws Exception{
         //Creating a Signature object
         Signature sign = Signature.getInstance("SHA256withRSA");
 
@@ -41,7 +41,7 @@ public class Encryption {
         data.privateKey=privateKeyStr;
         return data;
     }
-    public String decrypt(EncryptedData data)throws Exception{
+    public static String decrypt(EncryptedData data)throws Exception{
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         String encryptedKey=data.privateKey;
         byte[] privateKeyByte=Base64.getDecoder().decode(encryptedKey.getBytes(StandardCharsets.UTF_8));
