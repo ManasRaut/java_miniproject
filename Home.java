@@ -106,7 +106,7 @@ public class Home {
             UserDBUtilities db = new UserDBUtilities();
             ArrayList<UserInfo> data = db.getUserInfo(user);
             for(UserInfo user_: data) {
-                listPanel.add(new ListItem(user, user_.websiteName, user_.username, user_.password, i));
+                listPanel.add(new ListItem(this, user, user_.websiteName, user_.username, user_.password, i));
                 i++;
             }
             db.endConnection();

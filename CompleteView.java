@@ -11,7 +11,6 @@ public class CompleteView {
     private String user;
     private String website;
     private String pass;
-    boolean permited;
     String acc;
     JFrame frame;
     JTextField webnameField;
@@ -20,14 +19,15 @@ public class CompleteView {
     Clipboard clipboard;
     CompleteView thisClass;
     JButton copyBtn;
+    Home home;
 
-    CompleteView(String a, String w, String u, String p) {
+    CompleteView(Home h, String a, String w, String u, String p) {
         user = u;
         website = w;
         pass = p;
         acc = a;
-        permited = false;
         thisClass = this;
+        home = h;
         clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
         frame = new JFrame("All Details");
         frame.setName("CompleteView");
@@ -75,24 +75,17 @@ public class CompleteView {
         panel4.setBackground(Styles.primary_white);
         JLabel label4 = new JLabel("Password: ");
         copyBtn = new JButton("Copy");
-        copyBtn.setEnabled(false);
         copyBtn.setBackground(Styles.primary_button_color);
         copyBtn.setBorder(Styles.white_button_border);
         copyBtn.setForeground(Color.WHITE);
         passwordField = new JPasswordField(20);
         passwordField.setFont(Styles.text_field_font);
         passwordField.setBorder(Styles.text_field_border);
-        passwordField.setEchoChar('*');
-        passwordField.setEditable(false);
 
         JPanel panel5 = new JPanel(new FlowLayout());
         panel5.setBackground(Styles.primary_white);
-        JButton editbtn = new JButton("Edit");
         JButton removeBtn = new JButton("delete");
         JButton savebtn = new JButton("Save");
-        editbtn.setBackground(Styles.primary_button_color);
-        editbtn.setBorder(Styles.white_button_border);
-        editbtn.setForeground(Color.WHITE);
         savebtn.setBackground(Styles.primary_button_color);
         savebtn.setBorder(Styles.white_button_border);
         savebtn.setForeground(Color.WHITE);
@@ -109,7 +102,6 @@ public class CompleteView {
         panel4.add(label4);
         panel4.add(passwordField);
         panel4.add(copyBtn);
-        panel5.add(editbtn);
         panel5.add(savebtn);
         panel5.add(removeBtn);
         frame.add(panel1);
@@ -124,45 +116,42 @@ public class CompleteView {
                 clipboard.setContents(new StringSelection(s), null);
             }
         });
-        editbtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new ActionCnfm(acc, thisClass);
-            }
-        });
         removeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                if(!permited) {
-                    new ActionCnfm(acc, thisClass);
+                try {
+                    UserDBUtilities userdb = new UserDBUtilities();
+                    PrivateDB privatedb = new PrivateDB();
+                    UserInfo entry = new UserInfo(acc, website, user, pass);
+                    userdb.deleteUserInfo(entry);
+                    privatedb.deleteUserPrivateKey(website, user);
+                    userdb.endConnection();
+                    privatedb.endConnection();
+                } catch(Exception e) {
+                    System.out.println("Exception at remove password");
+                    new ErrorDialog("Error", "Could'nt delete password");
+                    e.printStackTrace();
                 }
-                if(permited) {
-                    try {
-                        UserDBUtilities userdb = new UserDBUtilities();
-                        PrivateDB privatedb = new PrivateDB();
-                        UserInfo entry = new UserInfo(acc, website, user, pass);
-                        System.out.println(acc + " yes");
-                        userdb.deleteUserInfo(entry);
-                        System.out.println("yes");
-                        privatedb.deleteUserPrivateKey(website, user);
-                        System.out.println("yes");
-                    } catch(Exception e) {
-                        System.out.println("Exception at remove password");
-                        e.printStackTrace();
-                    }
-                }
+                frame.setVisible(false);
+                home.populate();
             }
         });
         savebtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                
+                try {
+                    UserDBUtilities userDb = new UserDBUtilities();
+                    PrivateDB privateDb = new PrivateDB();
+                    EncryptedData data_e = Encryption.encrypt(String.valueOf(passwordField.getPassword()));
+                    userDb.updateUserPassword(website, user, acc, data_e.encryptedPassword);
+                    privateDb.updateUserPrivateKey(website, user, data_e.privateKey);
+                    privateDb.endConnection();
+                    userDb.endConnection();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                frame.setVisible(false);
+                home.populate();
             }
         });
-    }
-
-    public void action() {
-        permited = true;
-        passwordField.setEditable(true);
-        passwordField.setEchoChar((char) 0);
-        copyBtn.setEnabled(true);
     }
 
     public void loadDetails() {
@@ -175,6 +164,7 @@ public class CompleteView {
             passwordField.setText(password);
             webnameField.setText(website);
             usrnameField.setText(user);
+            private_db.endConnection();
         } catch(Exception e) {
             new ErrorDialog("Error", "Could'nt load! please try again");
         }

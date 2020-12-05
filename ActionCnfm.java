@@ -23,7 +23,7 @@ public class ActionCnfm {
 
         JPanel panel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel4.setBackground(Styles.primary_white);
-        JLabel label1 = new JLabel("Confirm by entering password: ");
+        JLabel label1 = new JLabel("Confirm by entering privacy key: ");
         label1.setFont(new Font("Calibri", Font.PLAIN, 18));
         JPanel panel2 = new JPanel(new FlowLayout());
         panel2.setBackground(Styles.primary_white);
@@ -89,6 +89,8 @@ public class ActionCnfm {
             eData.privateKey = pin_pk;
             eData.encryptedPassword = pin_e;
             String pin = Encryption.decrypt(eData);
+            user_db.endConnection();
+            private_db.endConnection();
             if(pin.equals(p)) {
                 return true;
             }
@@ -99,10 +101,10 @@ public class ActionCnfm {
     }
 
     private void sendResult() {
-        if(view.getClass().equals(CompleteView.class)) {
-            ((CompleteView) view).action();
-        } else if(view.getClass().equals(NewPassword.class)) {
+        if(view.getClass().equals(NewPassword.class)) {
             ((NewPassword) view).action();
+        } else if(view.getClass().equals(ListItem.class)) {
+            ((ListItem) view).action();
         }
     }
 }

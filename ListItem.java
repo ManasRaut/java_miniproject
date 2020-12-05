@@ -14,9 +14,13 @@ public class ListItem extends JPanel {
     private JLabel webname;
     private String password;
     private String user;
+    ListItem thisClass;
+    Home home;
 
-    ListItem(String a, String w, String u, String p, int sr) {
+    ListItem(Home h, String a, String w, String u, String p, int sr) {
         thisPanel = this;
+        thisClass = this;
+        home = h;
         user = u;
         acc = a;
         userLabel = new JLabel(u);
@@ -41,8 +45,7 @@ public class ListItem extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2 && !e.isConsumed()) {
                     e.consume();
-                    //TODO
-                    new CompleteView(acc, webname.getText(), user, password);
+                    new ActionCnfm(acc, thisClass);
                 }
             }
             public void mousePressed(MouseEvent e) {
@@ -58,5 +61,9 @@ public class ListItem extends JPanel {
                 thisPanel.setBackground(noneColor);
 			}
         });
+    }
+
+    public void action() {
+        new CompleteView(home, acc, webname.getText(), user, password);
     }
 }

@@ -78,6 +78,17 @@ public class UserDBUtilities {
         return query.executeQuery().next();
     }
 
+    // to  update user password
+    public void updateUserPassword(String w, String u, String acc, String p) throws SQLException {
+        String statement = "UPDATE UserInfo SET password = ? WHERE account_name = ? AND website = ? AND username = ?";
+        PreparedStatement query = connection.prepareStatement(statement);
+        query.setString(1, p);
+        query.setString(2, acc);
+        query.setString(3, w);
+        query.setString(4, u);
+        query.executeUpdate();
+    }
+
     // for Accounts table
     // to insert new application account
     public void insertAccount(String accName,String password,String pin) throws SQLException {

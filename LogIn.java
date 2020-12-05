@@ -134,6 +134,7 @@ public class LogIn {
                     data.encryptedPassword = appPswrd_E;
                     data.privateKey = appPswrd_pk;
                     userDb.endConnection();
+                    privateDb.endConnection();
                     if(String.valueOf(pswordField.getPassword()).equals(Encryption.decrypt(data))) {
                         new Home(userField.getText());
                         frame.setVisible(false); 

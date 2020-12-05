@@ -11,6 +11,11 @@ public class PrivateDB {
     PrivateDB() throws SQLException {
         connection= DriverManager.getConnection(url);
     }
+    public void endConnection() throws SQLException {
+        if(connection !=null){
+            connection.close();
+        }
+    }
 
     // for inserting new Application private keys
     public void insertAccPrivateKeys(String accName,String passwordKey,String pinKey) throws SQLException {
@@ -57,12 +62,22 @@ public class PrivateDB {
         return query.executeQuery().getString(1);
     }
 
-    // delete particilar user private key
+    // delete particular user private key
     public void deleteUserPrivateKey(String website, String username) throws SQLException {
         String statement="DELETE FROM UserPrivateKeys WHERE website=? AND username=?";
         PreparedStatement query=connection.prepareStatement(statement);
         query.setString(1,website);
         query.setString(2,username);
+        query.executeUpdate();
+    }
+
+    // to update user password private key 
+    public void updateUserPrivateKey(String web, String u, String pk) throws SQLException {
+        String statement = "UPDATE UserPrivateKeys SET privateKey = ? WHERE website = ? AND username = ?";
+        PreparedStatement query=connection.prepareStatement(statement);
+        query.setString(1, pk);
+        query.setString(2, web);
+        query.setString(3, u);
         query.executeUpdate();
     }
 

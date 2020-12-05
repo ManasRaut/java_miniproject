@@ -84,6 +84,8 @@ public class ChangeProperty {
                             user_db.updateAccountPin(user, data_e.encryptedPassword);
                             private_db.updateAccountPinKey(user, data_e.privateKey);
                         }
+                        user_db.endConnection();
+                        private_db.endConnection();
                     } catch(Exception e) {
                         System.out.println("Exception at change property");
                     }

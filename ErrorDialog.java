@@ -11,7 +11,7 @@ public class ErrorDialog extends JDialog {
     ErrorDialog(String t, String m) {
         this.setLayout(new FlowLayout());
         this.add(new JLabel(m));
-        this.setSize(100, 80);
+        this.setSize(200, 100);
         this.setVisible(true);
     }
 }

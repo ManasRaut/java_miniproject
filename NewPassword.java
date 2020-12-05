@@ -115,9 +115,12 @@ public class NewPassword {
                 db.insertUserInfo(user, webnameField.getText(), usrnameField.getText(), password_e.encryptedPassword);
                 privateDb.insertUserPrivateKeys(webnameField.getText(), usrnameField.getText(), password_e.privateKey);
                 frame.setVisible(false);
+                db.endConnection();
+                privateDb.endConnection();
             }
         } catch(Exception e) {
             new ErrorDialog("Error", "Unable to add new details");
+            e.printStackTrace();
         }
         home.populate();
     }

@@ -129,6 +129,8 @@ public class SignUp {
                         userDb.insertAccount(usrField.getText(), password_data.encryptedPassword , privacy_data.encryptedPassword);
                         privateDb.insertAccPrivateKeys(usrField.getText(), password_data.privateKey, privacy_data.privateKey);
                     }
+                    userDb.endConnection();
+                    privateDb.endConnection();
                     close();
                 } catch (Exception e) {
                     System.out.println("Exception at sign up");
