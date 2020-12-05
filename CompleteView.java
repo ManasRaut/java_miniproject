@@ -8,8 +8,11 @@ import javax.swing.Box;
 import javax.swing.*;
 
 public class CompleteView {
-    private String u;
-    private String w;
+    private String user;
+    private String website;
+    private String pass;
+    boolean permited;
+    String acc;
     JFrame frame;
     JTextField webnameField;
     JTextField usrnameField;
@@ -18,7 +21,12 @@ public class CompleteView {
     CompleteView thisClass;
     JButton copyBtn;
 
-    CompleteView() {
+    CompleteView(String a, String w, String u, String p) {
+        user = u;
+        website = w;
+        pass = p;
+        acc = a;
+        permited = false;
         thisClass = this;
         clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
         frame = new JFrame("All Details");
@@ -38,6 +46,8 @@ public class CompleteView {
 			}
         });
         initUi();
+        loadDetails();
+        frame.setVisible(true);
     }
 
     public void initUi() {
@@ -116,29 +126,57 @@ public class CompleteView {
         });
         editbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
-                new ActionCnfm(u, thisClass);
+                new ActionCnfm(acc, thisClass);
             }
         });
         removeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
+                if(!permited) {
+                    new ActionCnfm(acc, thisClass);
+                }
+                if(permited) {
+                    try {
+                        UserDBUtilities userdb = new UserDBUtilities();
+                        PrivateDB privatedb = new PrivateDB();
+                        UserInfo entry = new UserInfo(acc, website, user, pass);
+                        System.out.println(acc + " yes");
+                        userdb.deleteUserInfo(entry);
+                        System.out.println("yes");
+                        privatedb.deleteUserPrivateKey(website, user);
+                        System.out.println("yes");
+                    } catch(Exception e) {
+                        System.out.println("Exception at remove password");
+                        e.printStackTrace();
+                    }
+                }
             }
         });
         savebtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
+                
             }
         });
     }
 
-    public void show(String w, String u) {
-        frame.setVisible(true);
-    }
-
     public void action() {
+        permited = true;
         passwordField.setEditable(true);
         passwordField.setEchoChar((char) 0);
         copyBtn.setEnabled(true);
+    }
+
+    public void loadDetails() {
+        try {
+            PrivateDB private_db = new PrivateDB();
+            EncryptedData data_e = new EncryptedData();
+            data_e.encryptedPassword = pass;
+            data_e.privateKey = private_db.getUserPrivateKey(website, user);
+            String password = Encryption.decrypt(data_e);
+            passwordField.setText(password);
+            webnameField.setText(website);
+            usrnameField.setText(user);
+        } catch(Exception e) {
+            new ErrorDialog("Error", "Could'nt load! please try again");
+        }
     }
 }

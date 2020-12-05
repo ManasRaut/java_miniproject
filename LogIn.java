@@ -9,7 +9,6 @@ public class LogIn {
     JFrame frame;
     JTextField userField;
     JPasswordField pswordField;
-    JLabel warning;
 
     LogIn() {
         frame = new JFrame("Log In");
@@ -30,10 +29,12 @@ public class LogIn {
         JPanel panel_2 = new JPanel(new FlowLayout());
         panel_1.setBackground(Styles.primary_violet);
         panel_2.setBackground(Styles.primary_violet);
+        ImageIcon appiconImage = new ImageIcon("assets\\app_logo.png");
+        JLabel appIcon = new JLabel(appiconImage);
         JLabel appName = new JLabel("PassWarden");
         JLabel slogan = new JLabel("Never forget another password");
         appName.setFont(new Font("Roboto", Font.BOLD, 26));
-        slogan.setFont(new Font("Calibri", Font.PLAIN, 18));
+        slogan.setFont(new Font("Calibri", Font.ITALIC, 16));
         appName.setForeground(Color.WHITE);
         slogan.setForeground(Color.WHITE);
 
@@ -46,6 +47,7 @@ public class LogIn {
         signupBtn.setFocusPainted(false);
         signupBtn.setBorder(Styles.black_button_border);
         
+        panel_1.add(appIcon);
         panel_1.add(appName);
         panel_2.add(slogan);
         panel_3.add(label_1);
@@ -78,7 +80,7 @@ public class LogIn {
 
         JPanel panel3 = new JPanel(new FlowLayout());
         panel3.setBackground(Styles.primary_white);
-        JLabel label3 = new JLabel("Pasword");
+        JLabel label3 = new JLabel("Password");
         pswordField = new JPasswordField(16);
         pswordField.setEchoChar('*');
         pswordField.setBackground(Color.WHITE);
@@ -118,14 +120,29 @@ public class LogIn {
             public void actionPerformed(ActionEvent ae) {
                 pswordField.setText("");
                 userField.setText("");
-                warning.setVisible(false);
+                pswordField.setBorder(Styles.text_field_border);
             }
         });
         loginBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
-                new Home(userField.getText());
-                frame.setVisible(false);
+                try {
+                    UserDBUtilities userDb = new UserDBUtilities();
+                    PrivateDB privateDb = new PrivateDB();
+                    String appPswrd_E = userDb.getAccountPassword(userField.getText());
+                    String appPswrd_pk = privateDb.getAccPasswordKey(userField.getText());
+                    EncryptedData data = new EncryptedData();
+                    data.encryptedPassword = appPswrd_E;
+                    data.privateKey = appPswrd_pk;
+                    userDb.endConnection();
+                    if(String.valueOf(pswordField.getPassword()).equals(Encryption.decrypt(data))) {
+                        new Home(userField.getText());
+                        frame.setVisible(false); 
+                    } else {
+                        pswordField.setBorder(Styles.red_warning_border);
+                    }
+                } catch( Exception e) {
+                    System.out.println("Exception at login");
+                }
             }
         });
         signupBtn.addActionListener(new ActionListener() {

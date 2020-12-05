@@ -15,14 +15,10 @@ public class SignUp {
     private JPasswordField pswordField;
     private JPasswordField cnfpswordField;
     private JPasswordField privacyField;
-    JLabel warning;
 
     SignUp(JFrame lf) {
         loginFrame = lf;
         frame = new JFrame("Sign Up");
-        warning = new JLabel("password not matching !!");
-        warning.setForeground(Color.RED);
-        warning.setVisible(false);
         frame.setSize(650, 600);
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         initUi();
@@ -120,8 +116,23 @@ public class SignUp {
         }); 
         signUpBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
-                close();
+                EncryptedData password_data = new EncryptedData();
+                EncryptedData privacy_data = new EncryptedData();
+                try {
+                    UserDBUtilities userDb = new UserDBUtilities();
+                    PrivateDB privateDb = new PrivateDB();
+                    if (userDb.checkUser(usrField.getText())) {
+                        usrField.setBorder(Styles.red_warning_border);
+                    } else {
+                        password_data = Encryption.encrypt(String.valueOf(pswordField.getPassword()));
+                        privacy_data = Encryption.encrypt(String.valueOf(privacyField.getPassword()));
+                        userDb.insertAccount(usrField.getText(), password_data.encryptedPassword , privacy_data.encryptedPassword);
+                        privateDb.insertAccPrivateKeys(usrField.getText(), password_data.privateKey, privacy_data.privateKey);
+                    }
+                    close();
+                } catch (Exception e) {
+                    System.out.println("Exception at sign up");
+                }
             }
         });
         clearBtn.addActionListener(new ActionListener() {
@@ -130,7 +141,10 @@ public class SignUp {
                 pswordField.setText("");
                 cnfpswordField.setText("");
                 privacyField.setText("");
-                warning.setVisible(false);
+                usrField.setBorder(Styles.text_field_border);
+                pswordField.setBorder(Styles.text_field_border);
+                privacyField.setBorder(Styles.text_field_border);
+                cnfpswordField.setBorder(Styles.text_field_border);
             }
         });
     }

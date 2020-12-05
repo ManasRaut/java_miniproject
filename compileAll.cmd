@@ -1,4 +1,5 @@
 javac -d . Styles.java
+javac -d . PrivateDB.java
 javac -d . UserDBUtilities.java
 javac -d . ErrorDialog.java
 javac -d . Encryption.java

@@ -2,9 +2,7 @@ package java_miniproject;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 
 public class ChangeProperty {
     JFrame frame;
@@ -74,7 +72,25 @@ public class ChangeProperty {
         });
         changebtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-
+                if(newproperty.getText().equals(cnfproperty.getText())) {
+                    try {
+                        UserDBUtilities user_db = new UserDBUtilities();
+                        PrivateDB private_db = new PrivateDB();
+                        EncryptedData data_e = Encryption.encrypt(newproperty.getText());
+                        if (property.equals("password")) {
+                            user_db.updateAccountPassword(user, data_e.encryptedPassword);
+                            private_db.updateAccountPrivateKey(user, data_e.privateKey);
+                        } else {
+                            user_db.updateAccountPin(user, data_e.encryptedPassword);
+                            private_db.updateAccountPinKey(user, data_e.privateKey);
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Exception at change property");
+                    }
+                    frame.setVisible(false);
+                } else {
+                    cnfproperty.setBorder(Styles.red_warning_border);
+                }
             }
         });
         frame.addWindowFocusListener(new WindowFocusListener() {

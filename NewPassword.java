@@ -11,9 +11,11 @@ public class NewPassword {
     JTextField passwordField;
     private String user;
     NewPassword thisClass;
+    Home home;
 
-    NewPassword(String u) {
+    NewPassword(String u, Home h) {
         user = u;
+        home = h;
         thisClass = this;
         frame = new JFrame("Create New Password");
         frame.setSize(500, 300);
@@ -89,7 +91,6 @@ public class NewPassword {
 
         cancelBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
                 frame.setVisible(false);
             }
         });
@@ -100,7 +101,7 @@ public class NewPassword {
         });
         suggestBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                //TODO
+                passwordField.setText(UserDBUtilities.generatePassword());
             }
         });
     }
@@ -108,11 +109,16 @@ public class NewPassword {
     public void action() {
         try {
             UserDBUtilities db = new UserDBUtilities();
-            EncryptedData enData = Encryption.encrypt(passwordField.getText());
-            db.insert(user, webnameField.getText(), usrnameField.getText(),  enData.encryptedPassword);
-            frame.setVisible(false);
+            PrivateDB privateDb = new PrivateDB();
+            if(!db.checkUserInfo(webnameField.getText(), usrnameField.getText())) {
+                EncryptedData password_e = Encryption.encrypt(passwordField.getText());
+                db.insertUserInfo(user, webnameField.getText(), usrnameField.getText(), password_e.encryptedPassword);
+                privateDb.insertUserPrivateKeys(webnameField.getText(), usrnameField.getText(), password_e.privateKey);
+                frame.setVisible(false);
+            }
         } catch(Exception e) {
             new ErrorDialog("Error", "Unable to add new details");
         }
+        home.populate();
     }
 }

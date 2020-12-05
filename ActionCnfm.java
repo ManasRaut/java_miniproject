@@ -5,6 +5,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.Box;
 
+import java_miniproject.Encryption;
+import java_miniproject.UserDBUtilities;
+
 public class ActionCnfm {
     JFrame frame;
     private String user;
@@ -54,6 +57,8 @@ public class ActionCnfm {
                 if(verify(p)) {
                     sendResult();
                     frame.setVisible(false);
+                } else {
+                    new ErrorDialog("Wrong pin", "Privacy pin is incorrect !");
                 }
             }
         });
@@ -75,7 +80,22 @@ public class ActionCnfm {
     }
 
     private boolean verify(String p) {
-        return true;
+        try {
+            UserDBUtilities user_db = new UserDBUtilities();
+            PrivateDB private_db = new PrivateDB();
+            String pin_e = user_db.getAccountPin(user);
+            String pin_pk = private_db.getAccPinKey(user);
+            EncryptedData eData = new EncryptedData();
+            eData.privateKey = pin_pk;
+            eData.encryptedPassword = pin_e;
+            String pin = Encryption.decrypt(eData);
+            if(pin.equals(p)) {
+                return true;
+            }
+        } catch(Exception e) {
+            System.out.println("Exception at privacy confirm");
+        }
+        return false;
     }
 
     private void sendResult() {

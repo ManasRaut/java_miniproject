@@ -7,16 +7,22 @@ import javax.swing.border.*;
 import javax.swing.*;
 
 public class ListItem extends JPanel {
+    private String acc;
     private JLabel userLabel;
     private JLabel srno;
     private JPanel thisPanel;
     private JLabel webname;
+    private String password;
+    private String user;
 
-    ListItem(String w, String u, int sr) {
+    ListItem(String a, String w, String u, String p, int sr) {
         thisPanel = this;
+        user = u;
+        acc = a;
         userLabel = new JLabel(u);
         webname = new JLabel(w);
         srno = new JLabel(String.valueOf(sr));
+        password = p;
         Dimension size = new Dimension(600, 30);
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setMaximumSize(size);
@@ -36,7 +42,7 @@ public class ListItem extends JPanel {
                 if(e.getClickCount() == 2 && !e.isConsumed()) {
                     e.consume();
                     //TODO
-                    new CompleteView().show(w,u);
+                    new CompleteView(acc, webname.getText(), user, password);
                 }
             }
             public void mousePressed(MouseEvent e) {

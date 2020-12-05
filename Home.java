@@ -11,9 +11,11 @@ public class Home {
     private String user;
     JPanel listPanel;
     JLabel countLabel;
+    Home thisClass;
 
     Home(String u) {
         user = u;
+        thisClass = this;
         frame = new JFrame("User: " + user);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(650, 500);
@@ -82,7 +84,7 @@ public class Home {
 
         addbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                new NewPassword(user);
+                new NewPassword(user, thisClass);
             }
         });
         changePassword.addActionListener(new ActionListener() {
@@ -102,11 +104,12 @@ public class Home {
         listPanel.removeAll();
         try {
             UserDBUtilities db = new UserDBUtilities();
-            ArrayList<UserInfo> data = db.getInfo(user);
-            for(UserInfo user: data) {
-                listPanel.add(new ListItem(user.websiteName, user.username, i));
+            ArrayList<UserInfo> data = db.getUserInfo(user);
+            for(UserInfo user_: data) {
+                listPanel.add(new ListItem(user, user_.websiteName, user_.username, user_.password, i));
                 i++;
             }
+            db.endConnection();
         } catch(Exception e) {
             new ErrorDialog("Error", "Could not load data !!");
         }
